@@ -1,11 +1,15 @@
 package eu
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class AppTest {
     @Test
-    fun test() {
+    fun `does not allow invalid format cron expression`() {
         val app = App()
-        app.main("* * * * * /var/test")
+
+        assertThrows<AssertionError> {
+            app.main("* * * * *")
+        }
     }
 }

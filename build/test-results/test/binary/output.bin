@@ -1,1 +1,0 @@
-XCronExpression(minute=*, hour=*, dayOfMonth=*, month=*, dayOfWeek=*, command=/var/test)
