@@ -34,7 +34,7 @@ class CronExpressionServiceTest {
 
     @Test
     fun `should properly interpret cron expression`() {
-        val validCronExpression = "1,15 0 1-3 * 1-5 /usr/bin/find"
+        val validCronExpression = "*/15 0 1-3 * 1-5 /usr/bin/find"
 
         val cronExpression = cronExpressionService.parseCronExpression(validCronExpression)
 
@@ -42,7 +42,7 @@ class CronExpressionServiceTest {
 
         val expectedResult =
             """
-            minute          1 15
+            minute          0 15 30 45
             hour            0
             day of month    1 2 3
             month           1 2 3 4 5 6 7 8 9 10 11 12

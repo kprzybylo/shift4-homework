@@ -6,7 +6,8 @@ class NumericField(
     override val supportedSpecialCharacters: List<SpecialCharacter> =
         listOf(SpecialCharacter.ASTERIKS, SpecialCharacter.COMMA, SpecialCharacter.HYPHEN),
 ) : CronField {
-    private val patternValidator = Regex("(^\\d{1,2}-\\d{1,2}\$)|(^[*]{1}\$)|(^\\d{0,2}(,\\d{0,2})*\$)|(^\\d{0,2}\$)")
+    private val patternValidator =
+        Regex("(^\\d{1,2}-\\d{1,2}\$)|(^[*]{1}\$)|(^\\d{0,2}(,\\d{0,2})*\$)|(^\\d{0,2}\$)|(^(([*]{1})|(\\d{1,2}))/\\d{0,2}\$)")
 
     init {
         validate()
@@ -34,11 +35,17 @@ class NumericField(
                 "Unallowed numeric value ($unallowedNumberProvided) provided. Allowed range ${allowedNumbersRange.first}..${allowedNumbersRange.last}"
             }
         }
+        if (fieldExpression.contains(SpecialCharacter.SLASH.character)) {
+            getStartAndStepValueForSlash()
+        }
     }
 
     override fun interpret(): String {
         return when {
-            fieldExpression.contains(SpecialCharacter.ASTERIKS.character) -> allowedNumbersRange.joinToString(" ")
+            fieldExpression.contains(SpecialCharacter.SLASH.character) ->
+                getStartAndStepValueForSlash().let {
+                    IntProgression.fromClosedRange(it.first, allowedNumbersRange.last, it.second)
+                }.joinToString(" ")
             fieldExpression.contains(SpecialCharacter.COMMA.character) -> fieldExpression.replace(",", " ")
             fieldExpression.contains(SpecialCharacter.HYPHEN.character) -> {
                 val expressionRange = fieldExpression.split(SpecialCharacter.HYPHEN.character)
@@ -46,8 +53,29 @@ class NumericField(
                 val upperBoundary = expressionRange[1].toInt()
                 (lowerBoundary..upperBoundary).joinToString(" ")
             }
+            fieldExpression.contains(SpecialCharacter.ASTERIKS.character) -> allowedNumbersRange.joinToString(" ")
             else -> fieldExpression
         }
+    }
+
+    private fun getStartAndStepValueForSlash(): Pair<Int, Int> {
+        val expressionValues = fieldExpression.split(SpecialCharacter.SLASH.character)
+        val startFrom =
+            expressionValues[0].let {
+                if (it == SpecialCharacter.ASTERIKS.character.toString()) {
+                    allowedNumbersRange.first
+                } else {
+                    it.toInt()
+                }
+            }
+        assert(startFrom >= allowedNumbersRange.first) {
+            "Invalid initial step provided (${expressionValues[0]}. Allowed to start from ${allowedNumbersRange.first}"
+        }
+        val stepValue = expressionValues[1].toInt()
+        assert(stepValue <= allowedNumbersRange.last) {
+            "Invalid step value provided (${expressionValues[1]}. Cannot be higher than ${allowedNumbersRange.last}"
+        }
+        return Pair(startFrom, stepValue)
     }
 
     companion object {
