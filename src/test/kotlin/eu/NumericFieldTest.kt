@@ -1,9 +1,9 @@
 package eu
 
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class NumericFieldTest {
     private val testRange = 0..59
@@ -13,7 +13,7 @@ class NumericFieldTest {
         val testFieldExpressions = listOf("*", "0-59", "1,2,3,4,5", "0")
 
         testFieldExpressions.forEach {
-            assertNotNull(NumericField(it, testRange))
+            NumericField(it, testRange) shouldNotBe null
         }
     }
 
@@ -34,7 +34,7 @@ class NumericFieldTest {
 
         val minutesField = NumericField(testFieldExpression, testRange)
 
-        assertEquals(minutesField.interpret(), (0..59).joinToString(" "))
+        minutesField.interpret() shouldBe (0..59).joinToString(" ")
     }
 
     @Test
@@ -43,7 +43,7 @@ class NumericFieldTest {
 
         val minutesField = NumericField(testFieldExpression, testRange)
 
-        assertEquals(minutesField.interpret(), (0..20).joinToString(" "))
+        minutesField.interpret() shouldBe (0..20).joinToString(" ")
     }
 
     @Test
@@ -52,6 +52,6 @@ class NumericFieldTest {
 
         val minutesField = NumericField(testFieldExpression, testRange)
 
-        assertEquals(minutesField.interpret(), (1..5).joinToString(" "))
+        minutesField.interpret() shouldBe (1..5).joinToString(" ")
     }
 }

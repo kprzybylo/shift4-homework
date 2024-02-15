@@ -1,8 +1,8 @@
 package eu
 
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertEquals
 
 class CronExpressionServiceTest {
     private val cronExpressionService = CronExpressionService()
@@ -13,12 +13,12 @@ class CronExpressionServiceTest {
 
         val cronExpression = cronExpressionService.parseCronExpression(validCronExpression)
 
-        assertEquals(cronExpression.command, "/usr/bin/find")
-        assertEquals(cronExpression.minutes.interpret(), "1 15")
-        assertEquals(cronExpression.hours.interpret(), "0")
-        assertEquals(cronExpression.dayOfMonth.interpret(), "1 2 3")
-        assertEquals(cronExpression.month.interpret(), "1 2 3 4 5 6 7 8 9 10 11 12")
-        assertEquals(cronExpression.dayOfWeek.interpret(), "1 2 3 4 5")
+        cronExpression.command shouldBe "/usr/bin/find"
+        cronExpression.minutes.interpret() shouldBe "1 15"
+        cronExpression.hours.interpret() shouldBe "0"
+        cronExpression.dayOfMonth.interpret() shouldBe "1 2 3"
+        cronExpression.month.interpret() shouldBe "1 2 3 4 5 6 7 8 9 10 11 12"
+        cronExpression.dayOfWeek.interpret() shouldBe "1 2 3 4 5"
     }
 
     @Test
@@ -50,6 +50,6 @@ class CronExpressionServiceTest {
             command         /usr/bin/find
             """.trimIndent()
 
-        assertEquals(result, expectedResult)
+        result shouldBe expectedResult
     }
 }
