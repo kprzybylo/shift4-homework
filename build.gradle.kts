@@ -25,4 +25,25 @@ tasks {
     withType<Test> {
         useJUnitPlatform()
     }
+
+    jar {
+        manifest {
+            attributes(
+                mapOf(
+                    "Implementation-Title" to "Cron Expression Parser",
+                    "Implementation-Version" to "v0.0.1",
+                    "Main-Class" to "eu.AppKt",
+                ),
+            )
+        }
+
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        from(sourceSets.main.get().output)
+
+        dependsOn(configurations.runtimeClasspath)
+        from({
+            configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+        })
+    }
 }
