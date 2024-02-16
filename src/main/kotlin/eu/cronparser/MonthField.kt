@@ -7,12 +7,6 @@ import eu.cronparser.utils.validator.TextFieldValidator
 class MonthField(
     override val fieldExpression: String,
     override val allowedNumbersRange: IntRange = 1..12,
-    override val supportedSpecialCharacters: List<SpecialCharacter> =
-        listOf(
-            SpecialCharacter.ASTERIKS,
-            SpecialCharacter.COMMA,
-            SpecialCharacter.HYPHEN,
-        ),
 ) : CronField {
     private val allowedTextValues = listOf("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC")
 
@@ -26,7 +20,7 @@ class MonthField(
 
     override fun interpret(): String {
         return if (NumericFieldValidator.isApplicable(fieldExpression)) {
-            return NumericField(fieldExpression, allowedNumbersRange, supportedSpecialCharacters).interpret()
+            return NumericField(fieldExpression, allowedNumbersRange).interpret()
         } else {
             when {
                 fieldExpression.contains(SpecialCharacter.COMMA.character) ->

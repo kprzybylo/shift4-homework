@@ -6,8 +6,6 @@ import eu.cronparser.utils.validator.NumericFieldValidator
 open class NumericField(
     override val fieldExpression: String,
     override val allowedNumbersRange: IntRange,
-    override val supportedSpecialCharacters: List<SpecialCharacter> =
-        listOf(SpecialCharacter.ASTERIKS, SpecialCharacter.COMMA, SpecialCharacter.HYPHEN),
 ) : CronField {
     override fun validate() {
         NumericFieldValidator.validate(fieldExpression, allowedNumbersRange).getOrElse { throw it }
