@@ -1,6 +1,7 @@
 package eu.cronparser
 
-import java.lang.NumberFormatException
+import arrow.core.getOrElse
+import eu.cronparser.utils.validator.NumericFieldValidator
 
 open class NumericField(
     override val fieldExpression: String,
@@ -8,43 +9,8 @@ open class NumericField(
     override val supportedSpecialCharacters: List<SpecialCharacter> =
         listOf(SpecialCharacter.ASTERIKS, SpecialCharacter.COMMA, SpecialCharacter.HYPHEN),
 ) : CronField {
-    private val patternValidator =
-        Regex("(^\\d{1,2}-\\d{1,2}\$)|(^[*]{1}\$)|(^\\d{0,2}(,\\d{0,2})*\$)|(^\\d{0,2}\$)|(^(([*]{1})|(\\d{1,2}))/\\d{0,2}\$)")
-
     override fun validate() {
-        assert(patternValidator.matches(fieldExpression)) {
-            "Invalid expression provided for numeric field. $fieldExpression"
-        }
-        if (fieldExpression.contains(SpecialCharacter.HYPHEN.character)) {
-            val expressionRange = fieldExpression.split(SpecialCharacter.HYPHEN.character)
-            val lowerBoundary = expressionRange[0].toInt()
-            val upperBoundary = expressionRange[1].toInt()
-            assert(
-                lowerBoundary >= allowedNumbersRange.first && upperBoundary <= allowedNumbersRange.last && lowerBoundary < upperBoundary,
-            ) {
-                "Invalid numeric range provided ($lowerBoundary..$upperBoundary). Allowed range ${allowedNumbersRange.first}..${allowedNumbersRange.last}"
-            }
-        }
-        if (fieldExpression.contains(SpecialCharacter.COMMA.character)) {
-            val expressionValues = fieldExpression.split(SpecialCharacter.COMMA.character)
-            val unallowedNumberProvided =
-                expressionValues.any {
-                    !allowedNumbersRange.contains(it.toInt())
-                }
-            assert(!unallowedNumberProvided) {
-                "Unallowed numeric value ($unallowedNumberProvided) provided. Allowed range ${allowedNumbersRange.first}..${allowedNumbersRange.last}"
-            }
-        }
-        if (fieldExpression.contains(SpecialCharacter.SLASH.character)) {
-            getStartAndStepValueForSlash()
-        }
-        try {
-            val num = fieldExpression.toInt()
-            assert(allowedNumbersRange.contains(num)) {
-                "Numeric field value ($num) out of allowed range (${allowedNumbersRange.first}..${allowedNumbersRange.last})."
-            }
-        } catch (_: NumberFormatException) {
-        }
+        NumericFieldValidator.validate(fieldExpression, allowedNumbersRange).getOrElse { throw it }
     }
 
     override fun interpret(): String {

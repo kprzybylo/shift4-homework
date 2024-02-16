@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation("io.arrow-kt:arrow-core:1.2.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter:5.10.1")
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
 }
