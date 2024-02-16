@@ -1,6 +1,8 @@
 package eu
 
-class NumericField(
+import java.lang.NumberFormatException
+
+open class NumericField(
     override val fieldExpression: String,
     override val allowedNumbersRange: IntRange,
     override val supportedSpecialCharacters: List<SpecialCharacter> =
@@ -8,10 +10,6 @@ class NumericField(
 ) : CronField {
     private val patternValidator =
         Regex("(^\\d{1,2}-\\d{1,2}\$)|(^[*]{1}\$)|(^\\d{0,2}(,\\d{0,2})*\$)|(^\\d{0,2}\$)|(^(([*]{1})|(\\d{1,2}))/\\d{0,2}\$)")
-
-    init {
-        validate()
-    }
 
     override fun validate() {
         assert(patternValidator.matches(fieldExpression)) {
@@ -21,7 +19,9 @@ class NumericField(
             val expressionRange = fieldExpression.split(SpecialCharacter.HYPHEN.character)
             val lowerBoundary = expressionRange[0].toInt()
             val upperBoundary = expressionRange[1].toInt()
-            assert(lowerBoundary >= allowedNumbersRange.first && upperBoundary <= allowedNumbersRange.last) {
+            assert(
+                lowerBoundary >= allowedNumbersRange.first && upperBoundary <= allowedNumbersRange.last && lowerBoundary < upperBoundary,
+            ) {
                 "Invalid numeric range provided ($lowerBoundary..$upperBoundary). Allowed range ${allowedNumbersRange.first}..${allowedNumbersRange.last}"
             }
         }
@@ -37,6 +37,13 @@ class NumericField(
         }
         if (fieldExpression.contains(SpecialCharacter.SLASH.character)) {
             getStartAndStepValueForSlash()
+        }
+        try {
+            val num = fieldExpression.toInt()
+            assert(allowedNumbersRange.contains(num)) {
+                "Numeric field value ($num) out of allowed range (${allowedNumbersRange.first}..${allowedNumbersRange.last})."
+            }
+        } catch (_: NumberFormatException) {
         }
     }
 
@@ -84,8 +91,6 @@ class NumericField(
         fun hours(fieldExpression: String) = NumericField(fieldExpression, 0..23)
 
         fun dayOfMonth(fieldExpression: String) = NumericField(fieldExpression, 1..31)
-
-        fun month(fieldExpression: String) = NumericField(fieldExpression, 1..12)
 
         fun dayOfWeek(fieldExpression: String) = NumericField(fieldExpression, 0..6)
     }

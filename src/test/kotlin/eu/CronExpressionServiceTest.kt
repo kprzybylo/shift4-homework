@@ -52,4 +52,25 @@ class CronExpressionServiceTest {
 
         result shouldBe expectedResult
     }
+
+    @Test
+    fun `should properly interpret cron expression with months names`() {
+        val validCronExpression = "*/15 0 1-3 JAN-DEC 1-5 /usr/bin/find"
+
+        val cronExpression = cronExpressionService.parseCronExpression(validCronExpression)
+
+        val result = cronExpressionService.interpretCronExpression(cronExpression)
+
+        val expectedResult =
+            """
+            minute          0 15 30 45
+            hour            0
+            day of month    1 2 3
+            month           1 2 3 4 5 6 7 8 9 10 11 12
+            day of week     1 2 3 4 5
+            command         /usr/bin/find
+            """.trimIndent()
+
+        result shouldBe expectedResult
+    }
 }

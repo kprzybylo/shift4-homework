@@ -3,6 +3,8 @@
 Application aims to parse provided cron expression. Valid expression will result in printing interpretation of when
 command will be run.
 
+Parser implementation is based on description from [Wikipedia](https://en.wikipedia.org/wiki/Cron).
+
 ### Requirements
 
 JDK 17

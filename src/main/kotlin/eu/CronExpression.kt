@@ -7,4 +7,12 @@ data class CronExpression(
     val month: CronField,
     val dayOfWeek: CronField,
     val command: String,
-)
+) {
+    fun validate() {
+        minutes.validate()
+        hours.validate()
+        dayOfMonth.validate()
+        month.validate()
+        dayOfWeek.validate()
+    }
+}

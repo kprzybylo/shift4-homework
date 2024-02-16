@@ -1,7 +1,7 @@
 package eu
 
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -13,7 +13,9 @@ class NumericFieldTest {
         val testFieldExpressions = listOf("*", "0-59", "1,2,3,4,5", "0", "*/5", "1/5")
 
         testFieldExpressions.forEach {
-            NumericField(it, testRange) shouldNotBe null
+            shouldNotThrow<AssertionError> {
+                NumericField(it, testRange).validate()
+            }
         }
     }
 
@@ -23,7 +25,7 @@ class NumericFieldTest {
 
         testFieldExpressions.forEach {
             assertThrows<AssertionError> {
-                NumericField(it, testRange)
+                NumericField(it, testRange).validate()
             }
         }
     }

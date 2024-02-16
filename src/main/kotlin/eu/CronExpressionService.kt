@@ -8,14 +8,19 @@ class CronExpressionService {
             "Invalid cron expression format. It should contain five time fields and a command."
         }
 
-        return CronExpression(
-            minutes = NumericField.minutes(cronFields[0]),
-            hours = NumericField.hours(cronFields[1]),
-            dayOfMonth = NumericField.dayOfMonth(cronFields[2]),
-            month = NumericField.month(cronFields[3]),
-            dayOfWeek = NumericField.dayOfWeek(cronFields[4]),
-            command = cronFields[5],
-        )
+        val cronExpression =
+            CronExpression(
+                minutes = NumericField.minutes(cronFields[0]),
+                hours = NumericField.hours(cronFields[1]),
+                dayOfMonth = NumericField.dayOfMonth(cronFields[2]),
+                month = MonthField(cronFields[3]),
+                dayOfWeek = NumericField.dayOfWeek(cronFields[4]),
+                command = cronFields[5],
+            )
+
+        cronExpression.validate()
+
+        return cronExpression
     }
 
     fun interpretCronExpression(cronExpression: CronExpression): String {
