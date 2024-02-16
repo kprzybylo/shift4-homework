@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test

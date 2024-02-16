@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 fun main(args: Array<String>) {
     val cronExpressionService = CronExpressionService()

@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 data class CronExpression(
     val minutes: CronField,

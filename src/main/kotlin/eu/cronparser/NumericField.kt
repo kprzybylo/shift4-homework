@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 import java.lang.NumberFormatException
 

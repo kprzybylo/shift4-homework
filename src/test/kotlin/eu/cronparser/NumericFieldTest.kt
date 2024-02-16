@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.matchers.shouldBe

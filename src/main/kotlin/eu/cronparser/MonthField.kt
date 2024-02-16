@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 class MonthField(
     fieldExpression: String,

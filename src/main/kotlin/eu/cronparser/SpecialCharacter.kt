@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 enum class SpecialCharacter(val character: Char) {
     ASTERIKS('*'),

@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 class CronExpressionService {
     fun parseCronExpression(expression: String): CronExpression {

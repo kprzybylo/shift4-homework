@@ -1,4 +1,4 @@
-package eu
+package eu.cronparser
 
 interface CronField {
     val fieldExpression: String
