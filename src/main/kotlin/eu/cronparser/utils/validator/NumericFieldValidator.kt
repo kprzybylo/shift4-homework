@@ -52,18 +52,18 @@ object NumericFieldValidator : FieldValidator<IntRange> {
                             it.toInt()
                         }
                     }
-                assert(startFrom >= allowedValues.first) {
-                    "Invalid initial step provided (${expressionValues[0]}. Allowed to start from ${allowedValues.first}"
+                ensure(startFrom >= allowedValues.first) {
+                    AssertionError("Invalid initial step provided (${expressionValues[0]}). Allowed to start from ${allowedValues.first}")
                 }
                 val stepValue = expressionValues[1].toInt()
-                assert(stepValue <= allowedValues.last) {
-                    "Invalid step value provided (${expressionValues[1]}. Cannot be higher than ${allowedValues.last}"
+                ensure(stepValue <= allowedValues.last) {
+                    AssertionError("Invalid step value provided (${expressionValues[1]}). Cannot be higher than ${allowedValues.last}")
                 }
             }
             try {
                 val num = fieldExpression.toInt()
-                assert(allowedValues.contains(num)) {
-                    "Numeric field value ($num) out of allowed range (${allowedValues.first}..${allowedValues.last})."
+                ensure(allowedValues.contains(num)) {
+                    AssertionError("Numeric field value ($num) out of allowed range (${allowedValues.first}..${allowedValues.last}).")
                 }
             } catch (_: NumberFormatException) {
             }
